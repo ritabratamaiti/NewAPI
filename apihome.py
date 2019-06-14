@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, make_response, request
-from api import predictor
+import predictor
 
 app = Flask(__name__)
 
@@ -19,14 +19,11 @@ def task_router():
     req = request.get_json(force=True)
     print(req)
     task = req['task']
-    try:
-        api_call = req['url']
-        datautil = __import__(task + '_datautil')
-        X, dates = datautil.init_util(api_call)
-        response = predictor.init_predictor(task, dates, X)
-        return response
-    except:
-        return not_found_error()
+    api_call = req['url']
+    datautil = __import__(task + '_datautil')
+    X, dates = datautil.init_util(api_call)
+    response = predictor.init_predictor(task, dates, X)
+    return response
 
 app.run()
 
